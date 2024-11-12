@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "course_tags",
+  "info": {
+    "singularName": "course-tag",
+    "pluralName": "course-tags",
+    "displayName": "course_tag"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    }
+  }
+}
