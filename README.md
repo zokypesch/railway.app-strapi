@@ -59,3 +59,53 @@ Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/
 ---
 
 <sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+
+# spesific version 20
+link: https://askubuntu.com/questions/426750/how-can-i-update-my-nodejs-to-the-latest-version
+
+sudo npm cache clean -f
+sudo npm install -g n
+<!-- sudo n stable -->
+sudo n v20.9.0
+
+# create postgre docker
+https://github.com/sameersbn/docker-postgresql
+
+docker run --name postgresql -itd --restart always \
+  --publish 5432:5432 \
+  --volume postgresql:/mnt/c/Users/Maulana/strapi/railway.app-strapi/postgres \
+  --env 'PG_PASSWORD=Pmi2024!' \
+  sameersbn/postgresql:15-20230628
+
+# windows issues
+https://www.youtube.com/watch?v=gwhG7rar2gU
+
+# flush dns
+ipconfig /flushdns
+ipconfig /registerdns
+# type in chrome
+chrome://net-internals/#hsts
+
+delete domain security policies
+entry: localhost
+entry: 127.0.0.1
+
+netsh http add iplisten 127.0.0.1
+add in C:\Windows\System32\drivers\etc\hosts
+127.0.0.1 localhost
+
+https://stackoverflow.com/questions/34543443/cant-access-127-0-0-1
+
+node:internal/process/promises:289
+
+            triggerUncaughtException(err, true /* fromPromise */);
+
+            ^
+
+[UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "Must supply api_key".] {
+
+  code: 'ERR_UNHANDLED_REJECTION'
+
+}
+
+ 
