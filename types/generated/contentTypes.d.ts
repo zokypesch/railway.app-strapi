@@ -511,7 +511,6 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    description: Schema.Attribute.RichText;
     image: Schema.Attribute.Media<'images' | 'files', true> &
       Schema.Attribute.Required;
     meta_seo: Schema.Attribute.Component<'shared.seo', true>;
@@ -524,6 +523,13 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
       'api::article-tag.article-tag'
     >;
     author: Schema.Attribute.Relation<'oneToOne', 'api::author.author'>;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'default';
+        }
+      >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -652,7 +658,6 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
-    description: Schema.Attribute.RichText;
     image: Schema.Attribute.Media<'images' | 'files', true> &
       Schema.Attribute.Required;
     meta_seo: Schema.Attribute.Component<'shared.seo', true>;
@@ -667,6 +672,17 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'oneToOne',
       'api::sub-category.sub-category'
     >;
+    learning_platform: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::learning-platform.learning-platform'
+    >;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'default';
+        }
+      >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -708,6 +724,46 @@ export interface ApiCourseTagCourseTag extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course-tag.course-tag'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiLearningPlatformLearningPlatform
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'learning_platforms';
+  info: {
+    singularName: 'learning-platform';
+    pluralName: 'learning-platforms';
+    displayName: 'learning_platform';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images' | 'files', true>;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'default';
+        }
+      >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::learning-platform.learning-platform'
     > &
       Schema.Attribute.Private;
   };
@@ -1133,6 +1189,7 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::course.course': ApiCourseCourse;
       'api::course-tag.course-tag': ApiCourseTagCourseTag;
+      'api::learning-platform.learning-platform': ApiLearningPlatformLearningPlatform;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
       'admin::permission': AdminPermission;
       'admin::user': AdminUser;

@@ -22,9 +22,6 @@
       "targetField": "title",
       "required": true
     },
-    "description": {
-      "type": "richtext"
-    },
     "image": {
       "type": "media",
       "multiple": true,
@@ -53,6 +50,13 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::author.author"
+    },
+    "description": {
+      "type": "customField",
+      "options": {
+        "preset": "default"
+      },
+      "customField": "plugin::ckeditor5.CKEditor"
     }
   }
 }

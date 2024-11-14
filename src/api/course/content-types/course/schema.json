@@ -22,9 +22,6 @@
       "targetField": "name",
       "required": true
     },
-    "description": {
-      "type": "richtext"
-    },
     "image": {
       "type": "media",
       "multiple": true,
@@ -58,6 +55,18 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::sub-category.sub-category"
+    },
+    "learning_platform": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::learning-platform.learning-platform"
+    },
+    "description": {
+      "type": "customField",
+      "options": {
+        "preset": "default"
+      },
+      "customField": "plugin::ckeditor5.CKEditor"
     }
   }
 }
