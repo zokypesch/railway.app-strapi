@@ -662,6 +662,11 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::course-tag.course-tag'
     >;
+    link: Schema.Attribute.String & Schema.Attribute.Required;
+    sub_category: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::sub-category.sub-category'
+    >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;

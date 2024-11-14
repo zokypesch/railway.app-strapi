@@ -49,6 +49,15 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::course-tag.course-tag"
+    },
+    "link": {
+      "type": "string",
+      "required": true
+    },
+    "sub_category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::sub-category.sub-category"
     }
   }
 }
