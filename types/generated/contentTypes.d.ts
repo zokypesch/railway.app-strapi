@@ -775,6 +775,7 @@ export interface ApiSubCategorySubCategory extends Struct.CollectionTypeSchema {
     singularName: 'sub-category';
     pluralName: 'sub-categories';
     displayName: 'sub_category';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -785,6 +786,7 @@ export interface ApiSubCategorySubCategory extends Struct.CollectionTypeSchema {
       Schema.Attribute.Unique;
     image: Schema.Attribute.Media<'images' | 'files'> &
       Schema.Attribute.Required;
+    category: Schema.Attribute.Relation<'oneToOne', 'api::category.category'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
