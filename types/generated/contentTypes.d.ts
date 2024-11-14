@@ -667,6 +667,10 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'oneToOne',
       'api::sub-category.sub-category'
     >;
+    learning_platform: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::lembaga-pelatihan.lembaga-pelatihan'
+    >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -708,6 +712,41 @@ export interface ApiCourseTagCourseTag extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course-tag.course-tag'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiLembagaPelatihanLembagaPelatihan
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'lembaga_pelatihans';
+  info: {
+    singularName: 'lembaga-pelatihan';
+    pluralName: 'lembaga-pelatihans';
+    displayName: 'learning_platform';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images' | 'files'>;
+    description: Schema.Attribute.RichText;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lembaga-pelatihan.lembaga-pelatihan'
     > &
       Schema.Attribute.Private;
   };
@@ -1133,6 +1172,7 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::course.course': ApiCourseCourse;
       'api::course-tag.course-tag': ApiCourseTagCourseTag;
+      'api::lembaga-pelatihan.lembaga-pelatihan': ApiLembagaPelatihanLembagaPelatihan;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
       'admin::permission': AdminPermission;
       'admin::user': AdminUser;
