@@ -58,11 +58,6 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::sub-category.sub-category"
-    },
-    "learning_platform": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::lembaga-pelatihan.lembaga-pelatihan"
     }
   }
 }
