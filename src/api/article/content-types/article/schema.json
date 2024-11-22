@@ -57,6 +57,11 @@
         "preset": "default"
       },
       "customField": "plugin::ckeditor5.CKEditor"
+    },
+    "country_category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::country-category.country-category"
     }
   }
 }
