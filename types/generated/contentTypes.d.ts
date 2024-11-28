@@ -617,7 +617,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   info: {
     singularName: 'category';
     pluralName: 'categories';
-    displayName: 'category';
+    displayName: 'article_category';
     description: '';
   };
   options: {
@@ -630,10 +630,6 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     image: Schema.Attribute.Media<'images' | 'files'> &
       Schema.Attribute.Required;
-    sub_categories: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::sub-category.sub-category'
-    >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -650,13 +646,12 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiCountryCategoryCountryCategory
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'country_categories';
+export interface ApiCountryCountry extends Struct.CollectionTypeSchema {
+  collectionName: 'countries';
   info: {
-    singularName: 'country-category';
-    pluralName: 'country-categories';
-    displayName: 'country_category';
+    singularName: 'country';
+    pluralName: 'countries';
+    displayName: 'country';
     description: '';
   };
   options: {
@@ -666,7 +661,8 @@ export interface ApiCountryCategoryCountryCategory
     name: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
-    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    flag: Schema.Attribute.Media<'images' | 'files'> &
+      Schema.Attribute.Required;
     description: Schema.Attribute.RichText &
       Schema.Attribute.CustomField<
         'plugin::ckeditor5.CKEditor',
@@ -685,7 +681,93 @@ export interface ApiCountryCategoryCountryCategory
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
+      'api::country.country'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCountryCategoryCountryCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'country_categories';
+  info: {
+    singularName: 'country-category';
+    pluralName: 'country-categories';
+    displayName: 'country_category';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'default';
+        }
+      >;
+    image: Schema.Attribute.Media<'images' | 'files'>;
+    alias: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    country: Schema.Attribute.Relation<'oneToOne', 'api::country.country'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
       'api::country-category.country-category'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCountryContentCountryContent
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'country_contents';
+  info: {
+    singularName: 'country-content';
+    pluralName: 'country-contents';
+    displayName: 'country_content';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    country_category: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::country-category.country-category'
+    >;
+    country: Schema.Attribute.Relation<'oneToOne', 'api::country.country'>;
+    image: Schema.Attribute.Media<'images' | 'files'>;
+    meta_seo: Schema.Attribute.Component<'shared.seo', true>;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'default';
+        }
+      >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::country-content.country-content'
     > &
       Schema.Attribute.Private;
   };
@@ -823,7 +905,7 @@ export interface ApiSubCategorySubCategory extends Struct.CollectionTypeSchema {
   info: {
     singularName: 'sub-category';
     pluralName: 'sub-categories';
-    displayName: 'sub_category';
+    displayName: 'course_category';
     description: '';
   };
   options: {
@@ -835,7 +917,6 @@ export interface ApiSubCategorySubCategory extends Struct.CollectionTypeSchema {
       Schema.Attribute.Unique;
     image: Schema.Attribute.Media<'images' | 'files'> &
       Schema.Attribute.Required;
-    category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     slug: Schema.Attribute.UID<'name'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -1239,7 +1320,9 @@ declare module '@strapi/strapi' {
       'api::article-tag.article-tag': ApiArticleTagArticleTag;
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
+      'api::country.country': ApiCountryCountry;
       'api::country-category.country-category': ApiCountryCategoryCountryCategory;
+      'api::country-content.country-content': ApiCountryContentCountryContent;
       'api::course.course': ApiCourseCourse;
       'api::course-tag.course-tag': ApiCourseTagCourseTag;
       'api::learning-platform.learning-platform': ApiLearningPlatformLearningPlatform;
