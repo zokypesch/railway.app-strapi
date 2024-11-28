@@ -700,7 +700,7 @@ export interface ApiCountryCategoryCountryCategory
     draftAndPublish: false;
   };
   attributes: {
-    name: Schema.Attribute.String & Schema.Attribute.Required;
+    alias: Schema.Attribute.String & Schema.Attribute.Required;
     description: Schema.Attribute.RichText &
       Schema.Attribute.CustomField<
         'plugin::ckeditor5.CKEditor',
@@ -709,7 +709,7 @@ export interface ApiCountryCategoryCountryCategory
         }
       >;
     image: Schema.Attribute.Media<'images' | 'files'>;
-    alias: Schema.Attribute.String &
+    name: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
     country: Schema.Attribute.Relation<'oneToOne', 'api::country.country'>;

@@ -12,7 +12,7 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
+    "alias": {
       "type": "string",
       "required": true,
       "unique": false
@@ -33,7 +33,7 @@
         "files"
       ]
     },
-    "alias": {
+    "name": {
       "type": "string",
       "required": true,
       "unique": true
