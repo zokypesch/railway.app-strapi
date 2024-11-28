@@ -514,10 +514,6 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     image: Schema.Attribute.Media<'images' | 'files', true> &
       Schema.Attribute.Required;
     meta_seo: Schema.Attribute.Component<'shared.seo', true>;
-    sub_category: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::sub-category.sub-category'
-    >;
     article_tags: Schema.Attribute.Relation<
       'oneToMany',
       'api::article-tag.article-tag'
@@ -530,9 +526,9 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
           preset: 'default';
         }
       >;
-    country_category: Schema.Attribute.Relation<
+    article_category: Schema.Attribute.Relation<
       'oneToOne',
-      'api::country-category.country-category'
+      'api::category.category'
     >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -799,7 +795,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'api::course-tag.course-tag'
     >;
     link: Schema.Attribute.String & Schema.Attribute.Required;
-    sub_category: Schema.Attribute.Relation<
+    course_category: Schema.Attribute.Relation<
       'oneToOne',
       'api::sub-category.sub-category'
     >;

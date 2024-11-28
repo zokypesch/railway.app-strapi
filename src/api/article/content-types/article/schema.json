@@ -36,11 +36,6 @@
       "repeatable": true,
       "component": "shared.seo"
     },
-    "sub_category": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::sub-category.sub-category"
-    },
     "article_tags": {
       "type": "relation",
       "relation": "oneToMany",
@@ -58,10 +53,10 @@
       },
       "customField": "plugin::ckeditor5.CKEditor"
     },
-    "country_category": {
+    "article_category": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::country-category.country-category"
+      "target": "api::category.category"
     }
   }
 }
