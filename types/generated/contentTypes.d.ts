@@ -810,6 +810,10 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
           preset: 'default';
         }
       >;
+    course_learning_method: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::course-learning-method.course-learning-method'
+    >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -821,6 +825,44 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course.course'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCourseLearningMethodCourseLearningMethod
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'course_learning_methods';
+  info: {
+    singularName: 'course-learning-method';
+    pluralName: 'course-learning-methods';
+    displayName: 'course_learning_method';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'default';
+        }
+      >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::course-learning-method.course-learning-method'
     > &
       Schema.Attribute.Private;
   };
@@ -1320,6 +1362,7 @@ declare module '@strapi/strapi' {
       'api::country-category.country-category': ApiCountryCategoryCountryCategory;
       'api::country-content.country-content': ApiCountryContentCountryContent;
       'api::course.course': ApiCourseCourse;
+      'api::course-learning-method.course-learning-method': ApiCourseLearningMethodCourseLearningMethod;
       'api::course-tag.course-tag': ApiCourseTagCourseTag;
       'api::learning-platform.learning-platform': ApiLearningPlatformLearningPlatform;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
