@@ -75,20 +75,23 @@ export default (config, { strapi }) => {
             
             if (cachedResponse && !shouldClearCache) {
                 // If cache hit, return cached response
-                const { body, headers } = JSON.parse(cachedResponse);
+                const { body, headers, status } = JSON.parse(cachedResponse);
                 ctx.body = body;
+                ctx.status = status;
                 Object.entries(headers).forEach(([key, value]) => {
                     ctx.set(key, value as string);
                 });
                 ctx.set('X-Cache', 'HIT');
             } else {
-                // If cache miss, process request and cache response
+                // If cache miss, process request
                 await next();
                 
+                // Only cache 200 OK responses
                 if (ctx.status === 200) {
                     const responseToCache = {
                         body: ctx.body,
-                        headers: ctx.response.headers
+                        headers: ctx.response.headers,
+                        status: ctx.status
                     };
                     
                     await tryRedisOperation(() => 
@@ -98,8 +101,10 @@ export default (config, { strapi }) => {
                             JSON.stringify(responseToCache)
                         )
                     );
+                    ctx.set('X-Cache', shouldClearCache ? 'CLEARED+MISS' : 'MISS');
+                } else {
+                    ctx.set('X-Cache', 'SKIP');
                 }
-                ctx.set('X-Cache', shouldClearCache ? 'CLEARED+MISS' : 'MISS');
             }
         } catch (error) {
             ctx.set('X-Cache', 'ERROR');
