@@ -9,6 +9,7 @@ export default [
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
+  'global::cache-middleware',
   {
     name: 'strapi::security',
     config: {
