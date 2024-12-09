@@ -1,9 +1,69 @@
-export default (config, { strapi })=> {
-    return async (ctx, next) => {
-        console.log("cache middleware");
-        const start = Date.now();
+import Redis from 'ioredis';
 
-        await next();
+const CACHE_EXPIRATION = 3600; // 1 hour in seconds
+
+export default (config, { strapi }) => {
+    // REDIS_URL=redis://username:password@host:port
+    const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+
+    return async (ctx, next) => {
+        const start = Date.now();
+        
+        const matches = ctx.path.match(/^\/?api(\/.+)$/);
+
+        // Skip caching for non-GET requests
+        if (ctx.method !== 'GET') {
+            await next();
+            return;
+        }
+        if (!matches) {
+            await next();
+            return;
+        }
+        if (matches.length !== 2) {
+            await next();
+            return;
+        }
+
+
+        // Generate cache key from request path
+        const cacheKey = `strapi:cache:${ctx.path}`;
+
+        try {
+            // Try to get cached response
+            const cachedResponse = await redis.get(cacheKey);
+            
+            if (cachedResponse) {
+                // If cache hit, return cached response
+                const { body, headers } = JSON.parse(cachedResponse);
+                ctx.body = body;
+                Object.entries(headers).forEach(([key, value]) => {
+                    ctx.set(key, value as string);
+                });
+                ctx.set('X-Cache', 'HIT');
+            } else {
+                // If cache miss, process request and cache response
+                await next();
+                
+                if (ctx.status === 200) {
+                    const responseToCache = {
+                        body: ctx.body,
+                        headers: ctx.response.headers
+                    };
+                    
+                    await redis.setex(
+                        cacheKey,
+                        CACHE_EXPIRATION,
+                        JSON.stringify(responseToCache)
+                    );
+                }
+                ctx.set('X-Cache', 'MISS');
+            }
+        } catch (error) {
+            ctx.set('X-Cache', 'ERROR');
+            strapi.log.error('Cache middleware error:', error);
+            await next();
+        }
 
         const delta = Math.ceil(Date.now() - start);
         ctx.set('X-Response-Time', delta + 'ms');
