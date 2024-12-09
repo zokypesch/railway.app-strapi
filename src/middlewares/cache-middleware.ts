@@ -1,15 +1,5 @@
 import Redis from 'ioredis';
 
-/**
- * Cache middleware
- * 
- * This middleware caches responses from Strapi's API.
- * It uses Redis as the cache store.
- * 
- * @param {object} config - Strapi's configuration
- * @param {object} ctx - Koa's context
- * @param {function} next - Koa's next middleware
- */
 export default (config, { strapi }) => {
     const REDIS_URL = strapi.config.redis.url;
     const CACHE_TIMEOUT = strapi.config.redis.timeout;
