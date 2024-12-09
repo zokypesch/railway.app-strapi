@@ -1,11 +1,19 @@
 import Redis from 'ioredis';
 
-
+/**
+ * Cache middleware
+ * 
+ * This middleware caches responses from Strapi's API.
+ * It uses Redis as the cache store.
+ * 
+ * @param {object} config - Strapi's configuration
+ * @param {object} ctx - Koa's context
+ * @param {function} next - Koa's next middleware
+ */
 export default (config, { strapi }) => {
     const REDIS_URL = strapi.config.redis.url;
     const CACHE_TIMEOUT = strapi.config.redis.timeout;
     const CACHE_EXPIRATION = strapi.config.redis.cache_ttl;
-
 
     const redis = new Redis(REDIS_URL, {
         connectTimeout: CACHE_TIMEOUT,
@@ -42,16 +50,40 @@ export default (config, { strapi }) => {
             return;
         }
 
+        // Parse query parameters
+        const queryParams = new URLSearchParams(ctx.querystring);
+        const shouldClearCache = queryParams.get('clear_cache') === '1';
+        
+        // Remove clear_cache from query params for cache key
+        queryParams.delete('clear_cache');
+        const cleanQueryString = queryParams.toString();
+        const queryStringForKey = cleanQueryString ? `?${decodeURIComponent(cleanQueryString)}` : '';
+        const cacheKey = `strapi:cache:${ctx.path}${queryStringForKey}`;
 
-        // Generate cache key from request path
-        const queryString = ctx.querystring ? `?${decodeURIComponent(ctx.querystring)}` : '';
-        const cacheKey = `strapi:cache:${ctx.path}${queryString}`;
+        const tryRedisOperation = async (operation: () => Promise<any>, retryCount = 1): Promise<any> => {
+            try {
+                return await operation();
+            } catch (error) {
+                if (retryCount > 0) {
+                    strapi.log.warn('Redis operation failed, retrying once...');
+                    return tryRedisOperation(operation, retryCount - 1);
+                }
+                throw error;
+            }
+        };
 
         try {
-            // Try to get cached response
-            const cachedResponse = await redis.get(cacheKey);
+            // Clear cache if requested
+            if (shouldClearCache) {
+                await tryRedisOperation(() => redis.del(cacheKey));
+                strapi.log.info(`Cache cleared for key: ${cacheKey}`);
+                ctx.set('X-Cache', 'CLEARED');
+            }
+
+            // Try to get cached response (will be null if just cleared)
+            const cachedResponse = await tryRedisOperation(() => redis.get(cacheKey));
             
-            if (cachedResponse) {
+            if (cachedResponse && !shouldClearCache) {
                 // If cache hit, return cached response
                 const { body, headers } = JSON.parse(cachedResponse);
                 ctx.body = body;
@@ -69,13 +101,15 @@ export default (config, { strapi }) => {
                         headers: ctx.response.headers
                     };
                     
-                    await redis.setex(
-                        cacheKey,
-                        CACHE_EXPIRATION,
-                        JSON.stringify(responseToCache)
+                    await tryRedisOperation(() => 
+                        redis.setex(
+                            cacheKey,
+                            CACHE_EXPIRATION,
+                            JSON.stringify(responseToCache)
+                        )
                     );
                 }
-                ctx.set('X-Cache', 'MISS');
+                ctx.set('X-Cache', shouldClearCache ? 'CLEARED+MISS' : 'MISS');
             }
         } catch (error) {
             ctx.set('X-Cache', 'ERROR');
