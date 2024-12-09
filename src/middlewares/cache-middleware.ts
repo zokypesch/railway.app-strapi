@@ -7,7 +7,12 @@ export default (config, { strapi }) => {
     const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
         connectTimeout: 1000, // 1 second
         commandTimeout: 1000,
-        retryStrategy: (times) => null // disable retries
+        retryStrategy: (times) => {
+            if (times <= 1) {
+                return 1000; // retry after 1 second
+            }
+            return null; // stop retrying after 1 attempt
+        }
     });
 
     redis.on('error', (error) => {
@@ -36,7 +41,8 @@ export default (config, { strapi }) => {
 
 
         // Generate cache key from request path
-        const cacheKey = `strapi:cache:${ctx.path}`;
+        const queryString = ctx.querystring ? `?${decodeURIComponent(ctx.querystring)}` : '';
+        const cacheKey = `strapi:cache:${ctx.path}${queryString}`;
 
         try {
             // Try to get cached response
