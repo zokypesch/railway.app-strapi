@@ -1,15 +1,18 @@
 import Redis from 'ioredis';
 
-const CACHE_EXPIRATION = process.env.CACHE_EXPIRATION || 3600; // 1 hour in seconds
 
 export default (config, { strapi }) => {
-    // REDIS_URL=redis://username:password@host:port
-    const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-        connectTimeout: 1000, // 1 second
-        commandTimeout: 1000,
+    const REDIS_URL = strapi.config.redis.url;
+    const CACHE_TIMEOUT = strapi.config.redis.timeout;
+    const CACHE_EXPIRATION = strapi.config.redis.cache_ttl;
+
+
+    const redis = new Redis(REDIS_URL, {
+        connectTimeout: CACHE_TIMEOUT,
+        commandTimeout: CACHE_TIMEOUT,
         retryStrategy: (times) => {
             if (times <= 1) {
-                return 1000; // retry after 1 second
+                return CACHE_TIMEOUT; // retry after 1 second
             }
             return null; // stop retrying after 1 attempt
         }
