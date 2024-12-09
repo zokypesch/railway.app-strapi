@@ -1,11 +1,10 @@
 import Redis from 'ioredis';
 
 export default (config, { strapi }) => {
-    const REDIS_URL = strapi.config.redis.url;
-    const CACHE_TIMEOUT = strapi.config.redis.timeout;
-    const CACHE_EXPIRATION = strapi.config.redis.cache_ttl;
+    const CACHE_TIMEOUT = 1000;
+    const CACHE_EXPIRATION = process.env.REDIS_CACHE_EXPIRATION || 3600;
 
-    const redis = new Redis(REDIS_URL, {
+    const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
         connectTimeout: CACHE_TIMEOUT,
         commandTimeout: CACHE_TIMEOUT,
         retryStrategy: (times) => {
