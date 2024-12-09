@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 
-const CACHE_EXPIRATION = 3600; // 1 hour in seconds
+const CACHE_EXPIRATION = process.env.CACHE_EXPIRATION || 3600; // 1 hour in seconds
 
 export default (config, { strapi }) => {
     // REDIS_URL=redis://username:password@host:port
@@ -16,6 +16,7 @@ export default (config, { strapi }) => {
             await next();
             return;
         }
+        // skip caching for non-API requests
         if (!matches) {
             await next();
             return;
