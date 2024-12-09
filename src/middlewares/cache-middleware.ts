@@ -4,7 +4,15 @@ const CACHE_EXPIRATION = process.env.CACHE_EXPIRATION || 3600; // 1 hour in seco
 
 export default (config, { strapi }) => {
     // REDIS_URL=redis://username:password@host:port
-    const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+    const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+        connectTimeout: 1000, // 1 second
+        commandTimeout: 1000,
+        retryStrategy: (times) => null // disable retries
+    });
+
+    redis.on('error', (error) => {
+        strapi.log.error('Redis connection error:', error);
+    });
 
     return async (ctx, next) => {
         const start = Date.now();
