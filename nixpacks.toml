@@ -7,9 +7,9 @@ YARN_VERSION = "1.22.22"
 
 [phases.build]
 cmds = [
-  "yarn install",
-  "yarn build"
+  "nix-shell -p nodejs_20 --run 'yarn install'",
+  "nix-shell -p nodejs_20 --run 'yarn build'"
 ]
 
 [phases.start]
-cmd = "yarn start"
+cmd = "nix-shell -p nodejs_20 --run 'yarn start'"
