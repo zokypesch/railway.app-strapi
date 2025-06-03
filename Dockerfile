@@ -1,23 +1,19 @@
-# Gunakan official Node.js 20 image
 FROM node:20
 
-# Set working directory di container
 WORKDIR /app
 
-# Salin package.json dan yarn.lock dulu (untuk caching layer yang efisien)
+# Salin package.json dan yarn.lock dulu untuk caching
 COPY package.json yarn.lock ./
 
-# Install Yarn global dan dependencies
-RUN npm install -g yarn && yarn install
+# Langsung install dependencies pakai yarn tanpa install ulang yarn global
+RUN yarn install
 
-# Salin semua source code
+# Salin semua source code setelah install dependencies
 COPY . .
 
-# Build admin panel Strapi (buat front-endnya)
+# Build strapi admin panel
 RUN yarn build
 
-# Buka port default Strapi
 EXPOSE 1337
 
-# Jalankan Strapi
 CMD ["yarn", "start"]
