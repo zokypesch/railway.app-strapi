@@ -31,7 +31,7 @@
     "typescript": "^5"
   },
   "engines": {
-    "node": "20"
+    "node": ">=20 <23"
   },
   "strapi": {
     "uuid": "fbaf61cd-dcdc-45ae-bf43-8781f5861c55"
