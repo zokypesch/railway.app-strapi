@@ -12,7 +12,7 @@ RUN yarn install
 COPY . .
 
 # Build strapi admin panel
-RUN yarn build
+RUN yarn build  --debug
 
 EXPOSE 1337
 
