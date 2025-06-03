@@ -1,6 +1,15 @@
 [phases.setup]
-nixPkgs = ['nodejs@20', 'yarn']
+nixPkgs = ['nodejs_20', 'yarn']
 
 [variables]
 NODE_VERSION = "20"
-YARN_VERSION = "4.3.1"
+YARN_VERSION = "1.22.22"
+
+[phases.build]
+cmds = [
+  "yarn install",
+  "yarn build"
+]
+
+[phases.start]
+cmd = "yarn start"
