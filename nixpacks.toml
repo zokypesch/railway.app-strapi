@@ -1,15 +1,14 @@
 [phases.setup]
-nixPkgs = ['nodejs_22', 'yarn']
+nixPkgs = ['nodejs_20', 'yarn']
 
 [variables]
-NODE_VERSION = "22.11.0"
-YARN_VERSION = "1.22.22"
+NODE_VERSION = "20"
 
 [phases.build]
 cmds = [
-  "nix-shell -p nodejs_22 --run 'yarn install'",
-  "nix-shell -p nodejs_22 --run 'yarn build'"
+  "nix-shell -p nodejs_20 --run 'yarn install'",
+  "nix-shell -p nodejs_20 --run 'yarn build'"
 ]
 
 [phases.start]
-cmd = "nix-shell -p nodejs_22 --run 'yarn start'"
+cmd = "nix-shell -p nodejs_20 --run 'yarn start'"

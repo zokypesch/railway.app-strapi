@@ -3,7 +3,7 @@ FROM node:20
 WORKDIR /app
 
 # Salin package.json dan yarn.lock dulu untuk caching
-COPY package.json yarn.lock ./
+COPY package.json ./
 
 # Langsung install dependencies pakai yarn tanpa install ulang yarn global
 RUN yarn install
@@ -12,7 +12,7 @@ RUN yarn install
 COPY . .
 
 # Build strapi admin panel
-RUN DEBUG=strapi:* yarn build
+RUN yarn build
 
 EXPOSE 1337
 
