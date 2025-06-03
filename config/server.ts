@@ -4,7 +4,7 @@ export default ({ env }) => ({
   app: {
     keys: env.array('APP_KEYS'),
   },
-  url: env('URL'),
+  url: env('SERVER_URL', 'http://localhost:1337'),
   proxy: true
 });
 
