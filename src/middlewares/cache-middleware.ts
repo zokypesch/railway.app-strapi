@@ -4,7 +4,7 @@ export default (config, { strapi }) => {
     const CACHE_TIMEOUT = 1000;
     const CACHE_EXPIRATION = process.env.REDIS_CACHE_EXPIRATION || 3600;
 
-    const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+    const redis = new Redis(process.env.REDIS_URL || 'redis://default:QARjCCHRJwjDkncizeBreMkcoLXkAPvq@autorack.proxy.rlwy.net:27780?family=0', {
         connectTimeout: CACHE_TIMEOUT,
         commandTimeout: CACHE_TIMEOUT,
         retryStrategy: (times) => {

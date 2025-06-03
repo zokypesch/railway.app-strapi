@@ -1,3 +1,9 @@
 export default ({ env }) => ({
-    url: `http://127.0.0.1:1337`,
+  host: env('HOST', '0.0.0.0'),
+  port: env.int('PORT', 8080),
+  app: {
+    keys: env.array('APP_KEYS', ['tj8ewf0h9w8zeadcbw726nl6k9xblr3v']),
+  },
+  url: env('URL', 'http://localhost:8080'),
+  proxy: true
 });
