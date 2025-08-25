@@ -4,7 +4,7 @@ export default ({ env }) => ({
   app: {
     keys: env.array('APP_KEYS'),
   },
-  url: 'https://cms.jaripmi.info',
+  url: env('URL', 'https://cms.jaripmi.info'),
   proxy: true
 });
 
