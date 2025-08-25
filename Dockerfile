@@ -2,7 +2,8 @@ FROM node:20
 
 WORKDIR /app
 
-COPY package.json ./
+# Copy package files for better Docker layer caching
+COPY package.json yarn.lock* ./
 RUN yarn install
 
 COPY . .
