@@ -5,7 +5,7 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      origin: ['https://cms.jaripmi.info', 'http://localhost:1337', 'http://127.0.0.1:1337'],
+      origin: ['https://cms.jaripmi.info', 'https://jaripmi.info', 'http://localhost:1337', 'http://127.0.0.1:1337', , 'http://localhost:8080', 'http://127.0.0.1:8080'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
       keepHeaderOnError: true,
