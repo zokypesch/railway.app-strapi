@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "content_groups",
+  "info": { "singularName": "content-group", "pluralName": "content-groups", "displayName": "Content Group", "description": "Groups content under a themed section" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "description": { "type": "customField", "customField": "plugin::ckeditor5.CKEditor", "options": { "preset": "defaultHtml" } },
+    "excerpt": { "type": "text" },
+    "image": { "type": "media", "media": true, "allowedTypes": ["images"] },
+    "icon": { "type": "media", "media": true, "allowedTypes": ["images"] },
+    "countries": { "type": "relation", "relation": "manyToMany", "target": "api::country.country" },
+    "service_infos": { "type": "relation", "relation": "manyToMany", "target": "api::service-info.service-info" },
+    "personas": { "type": "relation", "relation": "manyToMany", "target": "api::persona.persona" },
+    "contents": { "type": "relation", "relation": "oneToMany", "target": "api::content.content", "mappedBy": "content_group" },
+    "order": { "type": "integer", "default": 0 },
+    "meta_seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

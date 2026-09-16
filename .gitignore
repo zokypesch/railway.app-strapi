@@ -79,7 +79,6 @@ $RECYCLE.BIN/
 *#
 ssl
 .idea
-.vscode
 nbproject
 public/uploads/*
 !public/uploads/.gitkeep
@@ -122,7 +121,9 @@ coverage
 # Strapi
 ############################
 
-# .env
+.env
+.env.staging
+.env.production
 license.txt
 exports
 .strapi
@@ -130,5 +131,6 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
-
-docker-compose.yml
+files/
+backups/
+public/docs/

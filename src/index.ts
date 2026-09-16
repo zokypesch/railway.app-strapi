@@ -1,20 +1,61 @@
-// import type { Core } from '@strapi/strapi';
+import type { Core } from '@strapi/strapi';
 
 export default {
-  /**
-   * An asynchronous register function that runs before
-   * your application is initialized.
-   *
-   * This gives you an opportunity to extend code.
-   */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    const { patchCloudinaryProvider } = require('./utils/patch-cloudinary');
+    patchCloudinaryProvider(strapi);
 
-  /**
-   * An asynchronous bootstrap function that runs before
-   * your application gets started.
-   *
-   * This gives you an opportunity to set up your data model,
-   * run jobs, or perform some special logic.
-   */
-  bootstrap(/* { strapi }: { strapi: Core.Strapi } */) {},
+    const { resetContentManagerLayouts } = await import('./utils/reset-layouts');
+    await resetContentManagerLayouts(strapi);
+
+    if (process.env.SEED === 'true') {
+      const { seed } = await import('../scripts/seed');
+      console.log('SEED=true detected, running seeder...');
+      try {
+        await seed(strapi);
+        console.log('\nSeed completed successfully!');
+      } catch (err) {
+        console.error('Seed failed:', err);
+        process.exit(1);
+      }
+    }
+
+    if (process.env.REINDEX === 'true') {
+      const { reindexAll } = await import('./algolia/indexer');
+      console.log('REINDEX=true detected, running full reindex...');
+      try {
+        await reindexAll(strapi);
+        console.log('\nReindex completed successfully!');
+      } catch (err) {
+        console.error('Reindex failed:', err);
+        process.exit(1);
+      }
+    }
+
+    if (process.env.FIX_PDFS) {
+      const { fixCloudinaryPdfs } = await import('../scripts/fix-cloudinary-pdfs');
+      const mode = process.env.FIX_PDFS;
+      console.log(`FIX_PDFS=${mode} detected, running PDF fixer...`);
+      try {
+        await fixCloudinaryPdfs(strapi, mode);
+        console.log('\nPDF fix completed successfully!');
+        process.exit(0);
+      } catch (err) {
+        console.error('PDF fix failed:', err);
+        process.exit(1);
+      }
+    }
+
+    const { isAlgoliaEnabled } = await import('./algolia/client');
+    if (isAlgoliaEnabled()) {
+      const { registerAlgoliaHooks } = await import('./algolia/hooks');
+      registerAlgoliaHooks(strapi);
+    }
+
+    const { isCacheEnabled } = await import('./cache/client');
+    if (isCacheEnabled()) {
+      const { registerCacheHooks } = await import('./cache/hooks');
+      registerCacheHooks(strapi);
+    }
+  },
 };

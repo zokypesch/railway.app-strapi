@@ -1,35 +1,63 @@
-export default [
+import type { Core } from '@strapi/strapi';
+
+const config = ({
+  env,
+}: Core.Config.Shared.ConfigParams): Core.Config.Middlewares => [
+  {
+    resolve: './src/middlewares/response-time',
+  },
   'strapi::logger',
   'strapi::errors',
-  'strapi::security',
   {
-    name: 'strapi::cors',
-    config: {
-      origin: ['https://cms.jaripmi.info', 'https://jaripmi.info', 'http://localhost:1337', 'http://127.0.0.1:1337', , 'http://localhost:8080', 'http://127.0.0.1:8080'],
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-      keepHeaderOnError: true,
-    },
+    name: 'global::force-published',
+    resolve: './src/middlewares/force-published',
   },
-  'strapi::poweredBy',
-  'strapi::query',
-  'strapi::body',
-  'strapi::session',
-  'strapi::favicon',
-  'strapi::public',
-  'global::cache-middleware',
   {
     name: 'strapi::security',
     config: {
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          'connect-src': ["'self'", 'https:'],
+          'script-src': ["'self'", "'unsafe-inline'"],
+          'style-src': ["'self'", "'unsafe-inline'"],
           'img-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com'],
-          'media-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com'],
-          upgradeInsecureRequests: null,
+          'media-src': ["'self'", 'blob:', 'res.cloudinary.com'],
+          'frame-src': ["'self'", 'res.cloudinary.com'],
+          'object-src': ["'self'", 'res.cloudinary.com'],
         },
       },
     },
   },
+  {
+    name: 'strapi::cors',
+    config: {
+      origin: env.array('CORS_ORIGINS', [
+        'https://jaripmi.info',
+        'https://staging.jaripmi.info',
+      ]),
+      credentials: true,
+    },
+  },
+  'strapi::poweredBy',
+  'strapi::query',
+  {
+    name: 'strapi::body',
+    config: {
+      jsonLimit: '1mb',
+      formLimit: '56kb',
+      textLimit: '56kb',
+      formidable: {
+        maxFileSize: 50 * 1024 * 1024, // 50 MB
+      },
+    },
+  },
+  'strapi::session',
+  {
+    resolve: './src/cache/middleware',
+    config: {},
+  },
+  'strapi::favicon',
+  'strapi::public',
 ];
+
+export default config;

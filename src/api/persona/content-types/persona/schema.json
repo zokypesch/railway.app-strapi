@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "personas",
+  "info": { "singularName": "persona", "pluralName": "personas", "displayName": "Persona", "description": "One entry per persona (calon-pmi, pmi-aktif, keluarga-pmi, purna-pmi)" },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "banner_title": { "type": "string" },
+    "banner_subtitle": { "type": "string" },
+    "excerpt": { "type": "text", "required": true },
+    "description": { "type": "customField", "customField": "plugin::ckeditor5.CKEditor", "options": { "preset": "defaultHtml" } },
+    "image": { "type": "media", "media": true, "allowedTypes": ["images"], "required": true },
+    "background_color": { "type": "string" },
+    "order": { "type": "integer", "default": 0 },
+    "meta_seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

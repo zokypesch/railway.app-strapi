@@ -1,22 +1,44 @@
-export default ({ env }) => ({
-    'users-permissions': {
-        config: {
-            jwtSecret: env('JWT_SECRET'),
+import type { Core } from "@strapi/strapi";
+
+const config = ({
+  env,
+}: Core.Config.Shared.ConfigParams): Core.Config.Plugin => ({
+  upload: {
+    config: {
+      sizeLimit: 50 * 1024 * 1024, // 50 MB
+      provider: "cloudinary",
+      providerOptions: {
+        cloud_name: env("CLOUDINARY_NAME"),
+        api_key: env("CLOUDINARY_KEY"),
+        api_secret: env("CLOUDINARY_SECRET"),
+      },
+      actionOptions: {
+        upload: {
+          folder: "jari-pmi",
+          resource_type: "image",
         },
-    },
-    upload: {
-        config: {
-            provider: 'cloudinary',
-            providerOptions: {
-                cloud_name: env('CLOUDINARY_NAME'),
-                api_key: env('CLOUDINARY_KEY'),
-                api_secret: env('CLOUDINARY_SECRET'),
-            },
-            actionOptions: {
-                upload: {},
-                uploadStream: {},
-                delete: {},
-            },
+        uploadStream: {
+          folder: "jari-pmi",
+          resource_type: "image",
         },
+      },
     },
+  },
+  ckeditor5: {
+    enabled: true,
+  },
+  health: {
+    enabled: true,
+    config: {
+      path: "/health",
+      cache: false,
+      checks: {
+        memory: true,
+        disk: true,
+        database: true,
+      },
+    },
+  },
 });
+
+export default config;
